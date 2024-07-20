@@ -1,2 +1,1 @@
-# -
-Simple ncat based reverse shell creator with mass victim control
+21.6.347.279
