@@ -6,4 +6,4 @@ Simple ncat based reverse shell creator with mass victim control
 - Stealth mode
 
 ---
-Only for learning purpose!
+Only for learning purpose!.
