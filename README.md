@@ -1,1 +1,9 @@
-21.6.347.279
+Simple ncat based reverse shell creator with mass victim control
+
+### Features include
+- Reverse shell
+- Self install
+- Stealth mode
+
+---
+Only for learning purpose!
