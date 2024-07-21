@@ -9,7 +9,7 @@ DEBUG_MODE="false"
 SLEEP_TIME=20
 
 # GET ENCRYPTED IP FROM THIS LINK
-URL="https://raw.githubusercontent.com/rohitaryal/-/main/ip.txt"
+URL="https://raw.githubusercontent.com/erucix/-/main/ip.txt"
 
 # Get saved encoded IP from somewhere
 # Keep it far from you and controllable
