@@ -10,7 +10,7 @@ Simple and very basic ncat based reverse shell creator with mass victim control 
 ```bash
 git clone https://github.com/rohitaryal/-.git
 cd -/
-chmod +x *.sh
+chmod +x ip_util.sh
 ./ip_util.sh $(hostname -I)
 ```
 
